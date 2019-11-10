@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" th:replace="base::base-layout">
+    <title th:text="${user.getUsername()}+' - '+#{label.title.Logement}">Logement</title>
+</head>
+<body>
+<header th:insert="header::header" class="header"></header>
+<div class="container">
+    <div class="row">
+        <div class="col mx-auto">
+            <a href="#" class="btn btn-lg btn-success" th:text="#{label.form.AddHousing}">Add Housing</a>
+        </div>
+    </div>
+    <div class="row">
+        <h2 th:text="#{label.form.validations}"></h2>
+        <th:block th:switch="${#lists.isEmpty(reservations)}">
+            <div class="col" th:case="${true}">
+                nothing to show
+            </div>
+            <div class="table-responsive-md" th:case="${false}">
+                <table class="table">
+                    <th:block th:each="reservation : ${reservations}">
+                        <thead>
+                        <tr>
+                            <th scope="col" th:text="#{label.form.logement.Reference}">Reference</th>
+                            <th scope="col" th:text="#{label.form.logement.Localisation}">Localisation</th>
+                            <th scope="col" th:text="#{label.form.Guest}">Guest</th>
+                            <th scope="col" th:text="#{label.form.Occupants}">Occupants</th>
+                            <th scope="col" th:text="#{label.form.Actions}">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td th:text="${reservation.getLogement().getReference()}"></td>
+                            <td th:text="${reservation.getLogement().getAddress()}"></td>
+                            <td th:text="${reservation.getLocataire().getUsername()}"></td>
+                            <td th:text="${reservation.getNbrOccupant()}"></td>
+                            <td>
+                                <a th:href="@{/reservation/{id}/validate(id=${reservation.getId()})}" href="#" class="btn btn-success"></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </th:block>
+                </table>
+            </div>
+        </th:block>
+    </div>
+    <div class="row">
+        <h2 th:text="#{label.form.MyHousing}"></h2>
+        <th:block th:switch="${#lists.isEmpty(logements)}">
+            <div class="col" th:case="${true}">
+                nothing to show
+            </div>
+            <div class="table-responsive-md" th:case="${false}">
+                <table class="table table-hover">
+                    <th:block th:each="logement : ${logements}">
+                        <thead>
+                        <tr>
+                            <th scope="col" th:text="#{label.form.logement.Reference}">Reference</th>
+                            <th scope="col" th:text="#{label.form.logement.Localisation}">Localisation</th>
+                            <th scope="col" th:text="#{label.form.logement.Size}">Size</th>
+                            <th scope="col" th:text="#{label.form.Price}">Price</th>
+                            <th scope="col" th:text="#{label.Max}+' '+#{label.form.Occupants}">Occupants</th>
+                            <th scope="col" th:text="#{label.form.Reservations}">Reservations</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td th:text="${logement.getReference()}"></td>
+                            <td th:text="${logement.getAddress()}"></td>
+                            <td th:text="${logement.getSurface()}+' '+#{label.form.Miles}"></td>
+                            <td th:text="${logement.getHouseYear().getYear()}"></td>
+                            <td th:text="${logement.getPrice()}"></td>
+                           <td th:text="${logement.getNbrLoc()}"></td>
+                            <td>
+                                <div th:each="lreservation : ${logement.getActiveReservations()}">
+                                    <div class="d-inline" th:text="${lreservation.getLocataire().getUsername()}+' '+${lreservation.getPrice()}"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </th:block>
+                </table>
+            </div>
+        </th:block>
+
+    </div>
+</div>
+</body>
+</html>

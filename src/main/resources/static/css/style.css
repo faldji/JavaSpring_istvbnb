@@ -1,0 +1,33 @@
+.input-icon{
+    position: absolute;
+    z-index: 1;
+    margin: 10px;
+    color: gray;
+}
+.icon-btn{
+    padding-right: 15px;
+}
+.icon-btn i{
+    margin-left: 50px;
+}
+.padded-form-input {
+    padding-left: 30px !important;
+}
+@media (min-width: 768px) {
+    .custom-price-layout{
+        margin-top: -25px;
+    }
+}
+.bootstrap-select button{
+    display: block !important;
+    height: calc(1.5em + .75rem + 2px);
+    color: #495057 !important;
+    background-color: transparent ;
+    background-clip: padding-box;
+    border: 1px solid #ced4da !important;
+    border-radius: .25rem !important;
+}
+form > .form-group > .col-md-12{
+    padding-right: 0;
+    padding-left: 0;
+}

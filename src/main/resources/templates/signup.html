@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<head>
+    <meta th:replace="base::base-layout">
+    <title>Registration</title></head>
+<body>
+<header class="header" th:insert="header::header"></header>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 mx-auto">
+            <h1 th:text="#{label.form.reg.title}"></h1>
+            <form  th:object="${user}" class="form-group" th:action="@{/signup}" method="post">
+                <div class="form-group">
+                    <label for="username" th:text="#{label.form.Username}">Username</label>
+                    <input th:field="*{username}" required name="username" type="text" class="form-control" id="username" aria-describedby="usernameHelp" placeholder="Enter username">
+                    <p class="alert-danger" th:each="error: ${#fields.errors('username')}" th:text="${error}">Validation error</p>
+                </div>
+                <div class="form-group">
+                    <label for="email" th:text="#{label.form.Email}"></label>
+                    <input th:field="*{email}" required name="email" type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter Email">
+                    <p class="alert-danger" th:if="${#fields.errors('email')}" th:errors="*{email}">Validation error</p>
+                </div>
+                <div class="form-group">
+                    <label for="password" th:text="#{label.form.Password}">Password</label>
+                    <input th:field="*{password}" required name="password" type="password" class="form-control" id="password" placeholder="Password">
+                    <p class="alert-danger" th:if="${#fields.errors('password')}" th:errors="*{password}">Validation error</p>
+                </div>
+                <div>
+                    <label for="confirmPassword" th:text="#{label.form.ConfirmPassword}">Confirm Password</label>
+                    <input placeholder="Confirm Password" required class="form-control" name="confirmPassword" id="confirmPassword" type="password" th:field="*{matchingPassword}"/>
+                    <p class="alert-danger" th:if="${#fields.errors('matchingPassword')}" th:errors="*{matchingPassword}">Validation error</p>
+                </div>
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <select class="selectpicker col-md-12" name="role" id="role" th:value="*{role}"  multiple>
+                        <option th:each="val : ${roles}" th:text="${val}" th:value="${val}"></option>
+                    </select>
+                    <p class="alert-danger" th:if="${#fields.errors('role')}" th:errors="*{role}">Validation error</p>
+
+                </div>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                <button type="submit" class="btn btn-success" th:text="#{label.form.submit}"></button>
+            </form>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

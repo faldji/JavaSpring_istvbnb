@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8" th:replace="base::base-layout">
+    <title th:text="#{message.Error404}"></title>
+</head>
+<body>
+<header class="header" th:insert="header::header"></header>
+<div class="container">
+    <div class="row">
+        <div class="col mx-auto">
+            <h1 class="text-danger" th:text="#{message.Error404}"></h1>
+            <div class="alert-danger" th:text="">There was an unexpected error (type=Not Found, status=404).</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
