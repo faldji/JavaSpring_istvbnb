@@ -1,15 +1,116 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" th:charset="${'UTF-8'}"
+      xmlns:th="https://www.thymeleaf.org" th:lang="${#locale}" lang="fr">
 <head>
     <meta charset="UTF-8" th:replace="base::base-layout">
     <title th:text="${user.getUsername()}+' - '+#{label.title.Logement}">Logement</title>
 </head>
-<body>
+<body onload="showModal()">
 <header th:insert="header::header" class="header"></header>
 <div class="container">
     <div class="row">
-        <div class="col mx-auto">
-            <a href="#" class="btn btn-lg btn-success" th:text="#{label.form.AddHousing}">Add Housing</a>
+        <!-- Button trigger modal -->
+        <a th:text="#{label.form.AddHousing}" th:href="@{/logement(add)}"
+           class="btn btn-lg btn-success">
+            Add Housing
+        </a>
+        <input type="hidden" th:if="${showModal}" id="showModal">
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle"
+                            th:text="${typeForm == 'add'} ? #{label.form.AddHousing} : #{label.form.EditHousing}">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form enctype="multipart/form-data" th:object="${logementForm}" class="form-group"
+                          th:with="sendUrl=(${typeForm == 'add'}?'/logement/add':'/logement/edit/'+${idEdit})"
+                          th:action="@{${sendUrl}}"  method="post">
+                    <div class="modal-body">
+                            <div class="form-group">
+                                <label class="sr-only" for="inlineFormLocation" th:text="#{label.form.Location}">Location</label>
+                                <i class="input-icon fas fa-map-marker-alt"></i>
+
+                                <input th:field="*{address}" required type="text" class="padded-form-input form-control" id="inlineFormLocation"
+                                       th:placeholder="#{label.form.location.Anywhere}">
+                                <p class="alert-danger" th:each="error: ${#fields.errors('address')}" th:text="${error}">
+                                    Validation error
+                                </p>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="checkin" th:text="#{label.form.DatedDispo}"></label>
+                                <i class="input-icon far fa-calendar-alt"></i>
+                                <input th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" th:field="*{houseYear}" required name="checkin" class="padded-form-input form-control" id="checkin" type="date">
+                                <p class="alert-danger" th:each="error: ${#fields.errors('houseYear')}" th:text="${error}">
+                                    Validation error
+                                </p>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="nbrLoc" th:text="#{label.form.Occupants}">Occupants</label>
+                                <i class="input-icon fas fa-users"></i>
+                                <input th:field="*{nbrLoc}" required type="number" class="padded-form-input form-control" id="nbrLoc"
+                                       th:placeholder="#{label.form.Occupants}">
+                                <p class="alert-danger" th:each="error: ${#fields.errors('nbrLoc')}" th:text="${error}">
+                                    Validation error
+                                </p>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="surface" th:text="#{label.form.logement.Size}">Size</label>
+                                <i class="input-icon fas fa-ruler-combined"></i>
+                                <input th:field="*{surface}" required type="number" class="padded-form-input form-control" id="surface"
+                                       th:placeholder="#{label.form.logement.Size}">
+                                <p class="alert-danger" th:each="error: ${#fields.errors('surface')}" th:text="${error}">
+                                    Validation error
+                                </p>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="lgType" th:text="#{label.form.logement.Type}">Type</label>
+                                <i class="input-icon fas fa-building"></i>
+                                <select class="form-control col-md-12 padded-form-input" name="role" id="lgType" th:field="*{type}">
+                                    <option th:selected="${logementForm.type==idx.index}" th:each="val,idx : ${hType}" th:text="${val}" th:value="${idx.index}"></option>
+                                </select>
+                                <p class="alert-danger" th:if="${#fields.errors('type')}" th:errors="*{type}">Validation error</p>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="price" th:text="#{label.form.Price}">Price</label>
+                                <i class="input-icon fas fa-euro-sign"></i>
+                                <input th:field="*{price}" required type="number" class="padded-form-input form-control" id="price"
+                                       th:placeholder="#{label.form.Price}">
+                                <p class="alert-danger" th:each="error: ${#fields.errors('price')}" th:text="${error}">
+                                    Validation error
+                                </p>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="fileImg" th:text="#{label.form.choose.img}">Choose image</label>
+                                <i class="input-icon fas fa-camera"></i>
+                                <input disabled name="img" th:field="*{img}"  type="file" class="padded-form-input form-control-file" id="fileImg"
+                                       th:placeholder="#{label.form.choose.img}">
+                                <p class="alert-danger" th:each="error: ${#fields.errors('img')}" th:text="${error}">
+                                    Validation error
+                                </p>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="desc" th:text="#{label.form.Desc}">Description</label>
+                                <i class="input-icon fas fa-comment-dots"></i>
+                                <textarea th:field="*{description}"  type="number" class="padded-form-input form-control" id="desc"
+                                          th:placeholder="#{label.form.Desc}"></textarea>
+                                <p class="alert-danger" th:each="error: ${#fields.errors('description')}" th:text="${error}">
+                                    Validation error
+                                </p>
+                            </div>
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success"
+                                th:text="${typeForm == 'add'} ? #{label.form.submit} :  #{label.form.update}"></button>
+                    </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -18,30 +119,40 @@
             <div class="col" th:case="${true}">
                 nothing to show
             </div>
-            <div class="table-responsive-md" th:case="${false}">
+            <div class="col-md-12 table-responsive-md table-sm" th:case="${false}">
                 <table class="table">
-                    <th:block th:each="reservation : ${reservations}">
-                        <thead>
-                        <tr>
-                            <th scope="col" th:text="#{label.form.logement.Reference}">Reference</th>
-                            <th scope="col" th:text="#{label.form.logement.Localisation}">Localisation</th>
-                            <th scope="col" th:text="#{label.form.Guest}">Guest</th>
-                            <th scope="col" th:text="#{label.form.Occupants}">Occupants</th>
-                            <th scope="col" th:text="#{label.form.Actions}">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td th:text="${reservation.getLogement().getReference()}"></td>
-                            <td th:text="${reservation.getLogement().getAddress()}"></td>
-                            <td th:text="${reservation.getLocataire().getUsername()}"></td>
-                            <td th:text="${reservation.getNbrOccupant()}"></td>
-                            <td>
-                                <a th:href="@{/reservation/{id}/validate(id=${reservation.getId()})}" href="#" class="btn btn-success"></a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </th:block>
+                    <thead>
+                    <tr>
+                        <th scope="col" th:text="#{label.form.logement.Reference}">Reference</th>
+                        <th scope="col" th:text="#{label.form.logement.Localisation}">Localisation</th>
+                        <th scope="col" th:text="#{label.form.Guest}">Guest</th>
+                        <th scope="col" th:text="#{label.form.Occupants}">Occupants</th>
+                        <th scope="col" th:text="#{label.form.Night}">nb night</th>
+                        <th scope="col" th:text="#{label.form.Price}">Price</th>
+                        <th scope="col" th:text="#{label.form.Actions}">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="reservation : ${reservations}">
+                        <td th:text="${reservation.getLogement().getReference()}"></td>
+                        <td th:text="${reservation.getLogement().getAddress()}"></td>
+                        <td th:text="${reservation.getLocataire().getUsername()}"></td>
+                        <td th:text="${reservation.getNbrOccupant()}"></td>
+                        <td th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}"
+                            th:text="${days.convert(reservation.getDateFin().getTime() - reservation.getDateDebut().getTime(),millis)}"></td>
+                        <td th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}"
+                            th:text="${days.convert(reservation.getDateFin().getTime() - reservation.getDateDebut().getTime(),millis) * reservation.getPrice()+' &euro;'}"></td>
+                        <td>
+                            <form th:action="@{/reservation/validate/{id}(id=${reservation.getId()})}" method="post">
+                               <div class="btn-group">
+                                   <button type="submit" class="btn btn-success"><i class="fas fa-check"></i></button>
+                                   <a th:href="@{/reservation(cancel=${reservation.getId()})}" class="btn btn-danger"><i class="fas fa-times"></i></a>
+                               </div>
+
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
                 </table>
             </div>
         </th:block>
@@ -52,35 +163,58 @@
             <div class="col" th:case="${true}">
                 nothing to show
             </div>
-            <div class="table-responsive-md" th:case="${false}">
-                <table class="table table-hover">
-                    <th:block th:each="logement : ${logements}">
-                        <thead>
-                        <tr>
-                            <th scope="col" th:text="#{label.form.logement.Reference}">Reference</th>
-                            <th scope="col" th:text="#{label.form.logement.Localisation}">Localisation</th>
-                            <th scope="col" th:text="#{label.form.logement.Size}">Size</th>
-                            <th scope="col" th:text="#{label.form.Price}">Price</th>
-                            <th scope="col" th:text="#{label.Max}+' '+#{label.form.Occupants}">Occupants</th>
-                            <th scope="col" th:text="#{label.form.Reservations}">Reservations</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td th:text="${logement.getReference()}"></td>
-                            <td th:text="${logement.getAddress()}"></td>
-                            <td th:text="${logement.getSurface()}+' '+#{label.form.Miles}"></td>
-                            <td th:text="${logement.getHouseYear().getYear()}"></td>
-                            <td th:text="${logement.getPrice()}"></td>
-                           <td th:text="${logement.getNbrLoc()}"></td>
-                            <td>
-                                <div th:each="lreservation : ${logement.getActiveReservations()}">
-                                    <div class="d-inline" th:text="${lreservation.getLocataire().getUsername()}+' '+${lreservation.getPrice()}"></div>
-                                </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </th:block>
+            <div class="col-md-12 table-responsive-md" th:case="${false}">
+                <table class="table table-hover table-sm text-center">
+                    <thead>
+                    <tr class="table-active">
+                        <th scope="col" th:text="#{label.form.logement.Reference}">Reference</th>
+                        <th scope="col" th:text="#{label.form.logement.Localisation}">Localisation</th>
+                        <th scope="col" th:text="#{label.form.logement.Type}">Type</th>
+                        <th scope="col" th:text="#{label.form.logement.Size}">Size</th>
+                        <th scope="col" th:text="#{label.form.Date}">Year</th>
+                        <th scope="col" th:text="#{label.form.Price}">Price</th>
+                        <th scope="col" th:text="#{label.Max}+' '+#{label.form.Occupants}">Occupants</th>
+                        <th scope="col" th:text="#{label.form.Reservations}">Reservations</th>
+                        <th scope="col" th:text="#{label.form.Actions}">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="logement : ${logements}">
+                        <td th:text="${logement.getReference()}"></td>
+                        <td th:text="${logement.getAddress()}"></td>
+                        <td th:text="${hType[logement.getType()]}"></td>
+                        <td th:text="${logement.getSurface()}+' '+#{label.form.Miles}"></td>
+                        <td th:text="${#dates.format(logement.getHouseYear(),'yyyy/mm/dd')}"></td>
+                        <td th:text="${logement.getPrice()}+ ${' &euro;'}"></td>
+                        <td th:text="${logement.getNbrLoc()}"></td>
+                        <td>
+                            <div th:each="lreservation : ${logement.getActiveReservations()}">
+                                <div class="d-inline"
+                                     th:text="${lreservation.getLocataire().getUsername()}+' '+${lreservation.getPrice()}"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="btn-group-sm">
+                                <a th:title="#{label.form.Edit}" th:alt="#{label.form.Edit}" th:if="${logement.isEnabled()}" th:href="@{/logement(edit=${logement.getId()})}" href="#"
+                                   class="btn btn-success">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a th:title="#{label.form.Edit}" th:alt="#{label.form.Edit}" th:if="${logement.isEnabled()}" th:href="@{/logement(delete=${logement.getId()})}" href="#"
+                                   class="btn btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                                <a th:title="#{label.form.Enable}" th:alt="#{label.form.Enable}" th:if="${logement.isEnabled()}" th:href="@{/logement(disable=${logement.getId()})}" href="#"
+                                   class="btn btn-outline-info">
+                                    <i class="fas fa-toggle-on"></i>
+                                </a>
+                                <a th:title="#{label.form.Disable}" th:alt="#{label.form.Disable}" th:if="${!logement.isEnabled()}" th:href="@{/logement(enable=${logement.getId()})}" href="#"
+                                   class="btn btn-outline-secondary">
+                                    <i class="fas fa-toggle-off"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
                 </table>
             </div>
         </th:block>

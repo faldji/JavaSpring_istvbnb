@@ -1,4 +1,4 @@
-package com.istv.progcomp.entity;
+package com.istv.progcomp.model;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,13 +25,14 @@ public class UserEntity implements Serializable, UserDetails {
     @OneToMany(targetEntity = ReservationEntity.class,mappedBy = "locataire")
     private Collection<ReservationEntity> reservations;
 
-    public Collection<LogementEntity> getLogementEntities() {
+    public Collection<LogementEntity> getLogements() {
         return logements;
     }
 
-    public void setLogementEntities(Collection<LogementEntity> logementEntities) {
-        this.logements = logementEntities;
+    public void setLogements(Collection<LogementEntity> logements) {
+        this.logements = logements;
     }
+
     public UserEntity(String username, String password) {
         this.username = username;
         this.password = password;

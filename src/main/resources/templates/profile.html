@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" th:charset="${'UTF-8'}"
+      xmlns:th="https://www.thymeleaf.org" th:lang="${#locale}" lang="fr">
 <head>
     <meta charset="UTF-8" th:replace="base::base-layout">
     <title  th:text="#{label.title.Profile}+' - '+${#authentication.getName()}">Title</title>

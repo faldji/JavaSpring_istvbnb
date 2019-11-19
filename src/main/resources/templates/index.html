@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" th:charset="${'UTF-8'}"
+      xmlns:th="https://www.thymeleaf.org" th:lang="${#locale}" lang="fr">
 <head>
     <meta th:replace="base::base-layout">
     <title th:text="#{label.pages.home.title}"></title>
@@ -25,7 +26,7 @@
                                     <div class="input-group">
                                         <label class="sr-only" for="inlineFormLocation" th:text="#{label.form.Location}">Location</label>
                                         <i class="input-icon fas fa-map-marker-alt"></i>
-                                        <input required type="text" class="padded-form-input form-control" id="inlineFormLocation" th:placeholder="#{label.form.location.Anywhere}">
+                                        <input required type="search" class="padded-form-input form-control" id="inlineFormLocation" th:placeholder="#{label.form.location.Anywhere}">
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -63,17 +64,29 @@
     <div class="row" th:case="${false}" >
         <div class="col-md-4" th:each="logement : ${products}">
             <div class="card mb-4 shadow-sm">
-                <img th:src="@{/img/defaultHouse.png}" class="bd-placeholder-img card-img-top" src="" alt="">
+                <img th:src="@{${logement.getImg()}}" class="bd-placeholder-img card-img-top" src="" alt="">
                 <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text text-center">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                    <h5 class="card-title" th:text="${hType[logement.getType()]}+' - '+${logement.getReference()}"></h5>
+                    <th:block th:switch="${logement.getDescription().trim() == ''}">
+                        <p th:case="${false}" class="card-text text-center" th:text="${logement.getDescription()}"></p>
+                        <p th:case="${true}" class="card-text text-center">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                            ut labore et dolore magna aliqua.
+                        </p>
+
+                    </th:block>
                 </div>
                 <div class="card-footer">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-sm btn-outline-secondary" th:text="#{label.form.Reserve}">Reserve</button>
-                        </div>
-                        <small class="text-muted">Last updated 3 mins ago</small>
+                                <a th:href="@{/reservation(id=${logement.getId()}, add='')}" class="btn btn-outline-info" >
+                                    <strong th:text="#{label.form.Reserve}"></strong>
+                                    <span class="badge badge-pill badge-info" th:text="${logement.getPrice()}+' &euro;'"></span>
+                                </a>
+                            </div>
+                        <small class="text-muted" th:text="${#dates.format( logement.getHouseYear(),'yyyy/MM/dd')}">
+                            Last updated 3 mins ago
+                        </small>
                     </div>
                 </div>
             </div>

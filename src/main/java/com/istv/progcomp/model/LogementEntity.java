@@ -1,4 +1,4 @@
-package com.istv.progcomp.entity;
+package com.istv.progcomp.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,17 +13,19 @@ public class LogementEntity implements Serializable {
     @GeneratedValue
     private long id;
     private String reference;
-    private String type;
+    private int type;
     private String address;
     private Date houseYear;
     private double surface;
     private int price;
     private int nbrLoc;
     private String description;
+    private String img;
+    private boolean enabled;
     @ManyToOne
     @JoinColumn
     private UserEntity bailleur;
-    @OneToMany(targetEntity = ReservationEntity.class,mappedBy = "logementEntity")
+    @OneToMany(targetEntity = ReservationEntity.class,mappedBy = "logement",cascade = CascadeType.ALL)
     private Collection<ReservationEntity> reservations;
 
     public long getId() {
@@ -64,7 +66,20 @@ public class LogementEntity implements Serializable {
     public Collection<ReservationEntity> getActiveReservations() {
         if (reservations.isEmpty())
             return reservations;
-        return reservations.stream().filter(ReservationEntity::getActive).collect(Collectors.toCollection(ArrayList::new));
+        return reservations.stream().filter(ReservationEntity::isActive).collect(Collectors.toCollection(ArrayList::new));
+    }
+    public Collection<ReservationEntity> getValidReservations() {
+        if (reservations.isEmpty())
+            return reservations;
+        return reservations.stream().filter(ReservationEntity::isValidated).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public void setReservations(Collection<ReservationEntity> reservations) {
@@ -75,11 +90,11 @@ public class LogementEntity implements Serializable {
         this.reference = reference;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 
@@ -113,5 +128,13 @@ public class LogementEntity implements Serializable {
 
     public void setBailleur(UserEntity bailleur) {
         this.bailleur = bailleur;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 }

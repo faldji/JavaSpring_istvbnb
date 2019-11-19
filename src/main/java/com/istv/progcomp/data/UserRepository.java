@@ -1,6 +1,6 @@
-package com.istv.progcomp.reposytory;
+package com.istv.progcomp.data;
 
-import com.istv.progcomp.entity.UserEntity;
+import com.istv.progcomp.model.UserEntity;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

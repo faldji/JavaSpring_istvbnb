@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" th:charset="${'UTF-8'}"
+      xmlns:th="https://www.thymeleaf.org" th:lang="${#locale}" lang="fr">
+<head>
+    <meta charset="UTF-8" th:replace="base::base-layout">
+    <title th:text="${user.getUsername()}+' - '+#{label.form.Reservations}">Reservations</title>
+</head>
+<body onload="showResModal()">
+<header th:insert="header::header" class="header"></header>
+<div class="container">
+    <input type="hidden" th:if="${showResModal}" id="showResModal">
+    <!-- Modal -->
+    <div class="modal fade" id="resModal" tabindex="-1" role="dialog" aria-labelledby="resModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resModalTitle"
+                        th:text="${typeModal == 'add'} ? #{label.form.AddReservation} : #{label.form.EditReservation}">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form th:object="${reservationForm}" class="form-group"
+                      th:with="sendUrl=(${typeModal == 'add'}?'/reservation/add/'+${idAdd}:'/reservation/edit/'+${idEdit})"
+                      th:action="@{${sendUrl}}"  method="post">
+                    <div class="modal-body">
+                        <div class="text-center text-info h1" th:text="${price}+'&euro; / '+#{label.form.Night}">
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only" for="checkin" th:text="#{label.form.Start}"></label>
+                            <i class="input-icon far fa-calendar-alt"></i>
+                            <input th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" th:field="*{dateDebut}" required name="checkin" class="padded-form-input form-control" id="checkin" type="date">
+                            <p class="alert-danger" th:each="error: ${#fields.errors('dateDebut')}" th:text="${error}">
+                                Validation error
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only" for="checkout" th:text="#{label.form.End}"></label>
+                            <i class="input-icon far fa-calendar-alt"></i>
+                            <input th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" th:field="*{dateFin}" required name="checkout" class="padded-form-input form-control" id="checkout" type="date">
+                            <p class="alert-danger" th:each="error: ${#fields.errors('dateFin')}" th:text="${error}">
+                                Validation error
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only" for="nbrLoc" th:text="#{label.form.Occupants}">Occupants</label>
+                            <i class="input-icon fas fa-users"></i>
+                            <input th:field="*{nbrOccupant}" required type="number" class="padded-form-input form-control" id="nbrLoc"
+                                   th:placeholder="#{label.form.Occupants}">
+                            <p class="alert-danger" th:each="error: ${#fields.errors('nbrOccupant')}" th:text="${error}">
+                                Validation error
+                            </p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success"
+                                th:text="${typeModal == 'add'} ? #{label.form.submit} :  #{label.form.update}"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <h2 th:text="#{label.form.Reservations}"></h2>
+        <th:block th:switch="${#lists.isEmpty(reservations)}">
+            <div class="col" th:case="${true}">
+                nothing to show
+            </div>
+            <div class="col-md-12 table-responsive-md table-sm" th:case="${false}">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col" th:text="#{label.form.Status}">Status</th>
+                        <th scope="col" th:text="#{label.form.logement.Reference}">Reference</th>
+                        <th scope="col" th:text="#{label.form.logement.Localisation}">Localisation</th>
+                        <th scope="col" th:text="#{label.form.Guest}">Guest</th>
+                        <th scope="col" th:text="#{label.form.Owner}">Owner</th>
+                        <th scope="col" th:text="#{label.form.Night}">nb night</th>
+                        <th scope="col" th:text="#{label.form.Price}">Price</th>
+                        <th scope="col" th:text="#{label.form.Actions}">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="reservation : ${reservations}"
+                        th:class="${reservation.isActive() ? '':'disabled'}">
+                        <td th:if="${reservation.isActive()}" th:switch="${reservation.isValidated()}"
+                            th:class="${reservation.isValidated() ? 'alert-success':'alert-info'}">
+                            <div th:case="${true}" th:text="#{label.form.Valid}"></div>
+                            <div th:case="${false}" th:text="#{label.form.Waiting}"></div>
+                        </td>
+                        <td th:if="${!reservation.isActive()}" class="alert-secondary" th:text="#{label.form.Disable}"></td>
+                        <td th:text="${reservation.getLogement().getReference()}"></td>
+                        <td th:text="${reservation.getLogement().getAddress()}"></td>
+                        <td th:text="${reservation.getLocataire().getUsername()}"></td>
+                        <td th:text="${reservation.getBaileur().getUsername()}"></td>
+                        <td th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}"
+                            th:text="${days.convert(reservation.getDateFin().getTime() - reservation.getDateDebut().getTime(),millis)}"></td>
+                        <td th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}"
+                            th:text="${days.convert(reservation.getDateFin().getTime() - reservation.getDateDebut().getTime(),millis) * reservation.getPrice()+' &euro;'}"></td>
+                        <td>
+                            <div class="btn-group-sm" th:if="${reservation.isActive() && !reservation.isValidated()}" >
+                                <a th:title="#{label.form.Edit}" th:alt="#{label.form.Edit}" th:href="@{/reservation(edit=${reservation.getId()})}" href="#"
+                                   class="btn btn-success">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a th:title="#{label.form.Delete}" th:alt="#{label.form.Delete}" th:href="@{/reservation(delete=${reservation.getId()})}" href="#"
+                                   class="btn btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                            <div class="btn-group-sm" th:if="${reservation.isActive() && reservation.isValidated()}" >
+                                <a th:title="#{label.form.Cancel}" th:alt="#{label.form.Cancel}" th:href="@{/reservation(cancel=${reservation.getId()})}" href="#"
+                                   class="btn btn-danger">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </th:block>
+    </div>
+</div>
+</body>
+</html>

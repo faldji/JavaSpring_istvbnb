@@ -1,4 +1,4 @@
-package com.istv.progcomp.entity;
+package com.istv.progcomp.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,8 +13,8 @@ public class ReservationEntity implements Serializable {
     private Date createdAt;
     private Date dateDebut;
     private Date dateFin;
-    private Boolean isActive;
-    private Boolean isValidated;
+    private Boolean active;
+    private Boolean validated;
     private int nbrOccupant;
     @ManyToOne
     @JoinColumn(name = "bailleur_id")
@@ -24,7 +24,7 @@ public class ReservationEntity implements Serializable {
     private UserEntity locataire;
     @ManyToOne
     @JoinColumn(name = "logementEntity_id")
-    private LogementEntity logementEntity;
+    private LogementEntity logement;
 
     public long getId() {
         return id;
@@ -62,20 +62,22 @@ public class ReservationEntity implements Serializable {
         this.dateFin = dateFin;
     }
 
-    public Boolean getActive() {
-        return isActive;
+    public Boolean isActive() {
+        return active;
     }
 
     public void setActive(Boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
-    public Boolean getValidated() {
-        return isValidated;
+    public Boolean isValidated() {
+        return validated;
     }
+
+    public Boolean getValidated(){return validated;}
 
     public void setValidated(Boolean validated) {
-        isValidated = validated;
+        this.validated = validated;
     }
 
     public int getNbrOccupant() {
@@ -103,10 +105,10 @@ public class ReservationEntity implements Serializable {
     }
 
     public LogementEntity getLogement() {
-        return logementEntity;
+        return logement;
     }
 
     public void setLogement(LogementEntity logement) {
-        this.logementEntity = logement;
+        this.logement = logement;
     }
 }

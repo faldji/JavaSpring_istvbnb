@@ -1,6 +1,6 @@
 .input-icon{
     position: absolute;
-    z-index: 1;
+    z-index: 999;
     margin: 10px;
     color: gray;
 }

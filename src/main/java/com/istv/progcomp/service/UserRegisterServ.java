@@ -1,7 +1,7 @@
 package com.istv.progcomp.service;
 
-import com.istv.progcomp.entity.UserEntity;
-import com.istv.progcomp.reposytory.UserRepository;
+import com.istv.progcomp.model.UserEntity;
+import com.istv.progcomp.data.UserRepository;
 import com.istv.progcomp.service.imp.UserRegisterImpl;
 import form.exception.UniqueUserException;
 import form.UserForm;
