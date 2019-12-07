@@ -2,7 +2,7 @@
 ## Installation
 
 ### Automatic Installation
-* Run Maven Goal 'clean' 'compile' 'package' <code>mvn clean compile package</code>
+* Run Maven Goal 'clean' 'package' <code>./mvnw clean package</code>
 *  Launch file <code>[autorun.sh](autorun.sh)</code> | <code>[autorun.cmd](autorun.cmd)</code> for windows
 ```bash
 abdoulaye@faldji:~$  ./autorun.sh 

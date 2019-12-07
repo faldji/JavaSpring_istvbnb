@@ -54,30 +54,18 @@ public class DefaultController{
 
     //GET HOME Request return index.hml
     @RequestMapping(value = {"/", "/home"})
-    public String home(Model model, Principal principal, @RequestParam(required = false, defaultValue = "0") long dollarId,
-                       @RequestParam(required = false, defaultValue = "0") double dollar) throws  JsonProcessingException {
+    public String home(Model model, Principal principal) {
         Collection<LogementEntity> loadedValue = logementRepository.findLogementEntitiesByEnabledIsTrue();
         homeModelImg(model, loadedValue);
-        model.addAttribute("isDollar",false);
-        model.addAttribute("dollarId",dollarId);
         model.addAttribute("searchForm",new SearchForm());
         model.addAttribute("isSearchResult",false);
         if (principal != null){
             UserEntity userEntity = userRepository.findUserEntityByUsername(principal.getName());
-            if (userEntity != null){
-                if (dollar != 0){
-                    String resDollar = userRegisterServ.awsLambdaConvert(String.valueOf(dollar));
-                    model.addAttribute("isDollar",true);
-                   model.addAttribute("toDollar",resDollar);
-                }
-                Collection<ReservationEntity> resEntities;
-                resEntities=reservationRepository.findReservationEntitiesByActiveIsTrueAndValidatedIsFalseAndBaileur(userEntity);
-                if (resEntities != null)
+            Collection<ReservationEntity> resEntities;
+            resEntities=reservationRepository.findReservationEntitiesByActiveIsTrueAndValidatedIsFalseAndBaileur(userEntity);
+            if (resEntities != null)
                     model.addAttribute("activeRes",resEntities.size());
-            }
-
         }
-
         return "index";
     }
 
@@ -89,8 +77,6 @@ public class DefaultController{
         if (errors.hasErrors())
             return new ModelAndView("index");
         homeModelImg(model, loadedValue);
-        model.addAttribute("isDollar",false);
-        model.addAttribute("dollarId",-1);
         model.addAttribute("searchForm",searchForm);
         model.addAttribute("isSearchResult",true);
         if (principal != null){

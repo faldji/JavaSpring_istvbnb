@@ -10,8 +10,9 @@
     </parent>
     <groupId>com.istv</groupId>
     <artifactId>progcomp</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>progcomp</name>
+    <packaging>jar</packaging>
     <description>Un site de mise en relation de loueur/locataire pour des contrats de courtes durées.</description>
 
     <properties>
@@ -39,12 +40,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-lambda -->
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-lambda</artifactId>
-            <version>1.11.678</version>
         </dependency>
         <dependency>
             <groupId>org.hsqldb</groupId>
