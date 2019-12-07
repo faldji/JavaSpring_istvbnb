@@ -6,7 +6,7 @@ import com.istv.progcomp.model.LogementEntity;
 import com.istv.progcomp.model.ReservationEntity;
 import com.istv.progcomp.model.UserEntity;
 import com.istv.progcomp.service.imp.ReservationServImpl;
-import form.ReservationForm;
+import com.istv.progcomp.form.ReservationForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
@@ -96,10 +96,9 @@ public class ReservationServ implements ReservationServImpl {
     @Override
     public ReservationEntity validReservation(long id, UserEntity userEntity) {
         ReservationEntity reservationEntity = reservationRepository.findReservationEntityById(id);
-        if (reservationEntity ==null) {
-            System.out.println("res");
+        if (reservationEntity ==null)
             return null;
-        }
+
         LogementEntity logementEntity = reservationEntity.getLogement();
         if (logementEntity == null)
             return null;

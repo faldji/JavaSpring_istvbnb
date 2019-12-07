@@ -7,9 +7,7 @@ import com.istv.progcomp.data.LogementRepository;
 import com.istv.progcomp.data.ReservationRepository;
 import com.istv.progcomp.data.UserRepository;
 import com.istv.progcomp.service.LogementServ;
-import form.LogementForm;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.istv.progcomp.form.LogementForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -119,10 +117,10 @@ public class BailleurController {
                                        @PathVariable String add,
                                        @RequestParam(value = "img", required = false) MultipartFile file) throws IOException {
         if (principal == null)
-            return new ModelAndView("redirect:/home");
+            return new ModelAndView("redirect:/");
         UserEntity userEntity = userRepository.findUserEntityByUsername(principal.getName());
         if (userEntity == null)
-            return new ModelAndView("redirect:/home");
+            return new ModelAndView("redirect:/");
         Collection<LogementEntity> logements = logementRepository.findLogementEntitiesByBailleur(userEntity);
         Collection<ReservationEntity> reservations = reservationRepository.findReservationEntitiesByBaileur(userEntity);
         String[] messageArray = {

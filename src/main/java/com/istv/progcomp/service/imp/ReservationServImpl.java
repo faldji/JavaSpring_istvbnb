@@ -2,7 +2,7 @@ package com.istv.progcomp.service.imp;
 
 import com.istv.progcomp.model.ReservationEntity;
 import com.istv.progcomp.model.UserEntity;
-import form.ReservationForm;
+import com.istv.progcomp.form.ReservationForm;
 import org.springframework.validation.Errors;
 
 public interface ReservationServImpl {

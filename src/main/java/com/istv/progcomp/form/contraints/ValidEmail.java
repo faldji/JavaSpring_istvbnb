@@ -1,4 +1,4 @@
-package form.contraints;
+package com.istv.progcomp.form.contraints;
 
 import javax.validation.Constraint;
 import java.lang.annotation.Documented;

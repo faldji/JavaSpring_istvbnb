@@ -1,11 +1,10 @@
-package form;
+package com.istv.progcomp.form;
 
 
-import form.contraints.PasswordMatches;
-import form.contraints.ValidEmail;
+import com.istv.progcomp.form.contraints.PasswordMatches;
+import com.istv.progcomp.form.contraints.ValidEmail;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -26,18 +25,10 @@ public class UserForm {
     private String email;
 
     @NotNull
-    private String[] role;
+    private int[] role;
 
     public String getUsername() {
         return username;
-    }
-
-    public String[] getRole() {
-        return role;
-    }
-
-    public void setRole(String[] role) {
-        this.role = role;
     }
 
     public void setUsername(String username) {
@@ -67,4 +58,8 @@ public class UserForm {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public int[] getRole() {  return role; }
+
+    public void setRole(int[] role) {  this.role = role; }
 }

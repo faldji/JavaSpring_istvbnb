@@ -5,7 +5,7 @@ import com.istv.progcomp.data.UserRepository;
 import com.istv.progcomp.model.ReservationEntity;
 import com.istv.progcomp.model.UserEntity;
 import com.istv.progcomp.service.ReservationServ;
-import form.ReservationForm;
+import com.istv.progcomp.form.ReservationForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -82,11 +82,11 @@ public class LocataireController {
         }
         if (cancel!=0){
             ReservationEntity ca = reservationRepository.findReservationEntityById(cancel);
-            if (ca != null && ca.getBaileur().equals(userEntity)) {
+            if (ca != null && ca.getLocataire().equals(userEntity)) {
                 ca.setActive(false);
                 reservationRepository.save(ca);
             }
-            return "redirect:/logement";
+            return "redirect:/reservation";
         }
 
 
@@ -128,7 +128,7 @@ public class LocataireController {
             case "validate":
                 ReservationEntity validReservation = reservationServ.validReservation(id, userEntity);
                 if (validReservation == null) {
-                    return "reservation";
+                    return "logement";
                 }
                 return "redirect:/logement";
         }

@@ -10,14 +10,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.access.AccessDeniedHandler;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserAuthServ authServ;
-    private AccessDeniedHandler accessDeniedHandler;
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -33,7 +31,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login","/","/home","/signup").permitAll()
                 .antMatchers("/webfonts/**", "/img/**", "/js/**", "/css/**").permitAll()
                 .antMatchers("/profile/**").authenticated()
-                .antMatchers("/reservation/**").hasRole("USER")
                 .antMatchers("/logement/**").hasRole("ADMIN").anyRequest().authenticated()
                 .and()
                 .formLogin()

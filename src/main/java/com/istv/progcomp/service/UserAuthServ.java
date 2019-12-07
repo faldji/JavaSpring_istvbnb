@@ -23,6 +23,8 @@ public class UserAuthServ implements UserDetailsService {
             if (user==null)
                 throw new UsernameNotFoundException("No user present with username/Email : " + username);
         }
+
         return new User(user.getUsername(),user.getPassword(),true,true,true,true,user.getAuthorities());
     }
+
 }

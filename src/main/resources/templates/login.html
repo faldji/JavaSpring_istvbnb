@@ -13,6 +13,9 @@
             <div class="alert alert-danger" th:if="${param.error}" th:text="#{message.badCredentials}">
                 Invalid username and password.
             </div>
+            <div class="alert alert-success" th:if="${param.regSuccess}" th:text="#{message.regSucc}">
+                You have been registered.
+            </div>
             <div class="alert alert-info" th:if="${param.logout}" th:text="#{message.logoutSucc}">
                 You have been logged out.
             </div>

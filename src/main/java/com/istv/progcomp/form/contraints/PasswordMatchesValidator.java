@@ -1,6 +1,6 @@
-package form.contraints;
+package com.istv.progcomp.form.contraints;
 
-import form.UserForm;
+import com.istv.progcomp.form.UserForm;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

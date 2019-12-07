@@ -1,10 +1,11 @@
 package com.istv.progcomp.service;
 
+import com.istv.progcomp.form.SearchForm;
 import com.istv.progcomp.model.LogementEntity;
 import com.istv.progcomp.model.UserEntity;
 import com.istv.progcomp.data.LogementRepository;
 import com.istv.progcomp.service.imp.LogementServImpl;
-import form.LogementForm;
+import com.istv.progcomp.form.LogementForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -15,6 +16,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Random;
 
 @Service
@@ -23,7 +26,7 @@ public class LogementServ implements LogementServImpl {
     private LogementRepository logementRepository;
     @Override
     public LogementEntity addNewLogement(LogementForm logementForm, UserEntity userEntity,
-                                         Errors errors, MultipartFile file) throws IOException {
+                                         Errors errors, MultipartFile file)  {
         if (errors.hasErrors())
             return null;
         LogementEntity logementEntity = new LogementEntity();
@@ -98,5 +101,15 @@ public class LogementServ implements LogementServImpl {
         logementEntity.setSurface(logementForm.getSurface());
         logementEntity.setType(logementForm.getType());
         return logementRepository.save(logementEntity);
+    }
+    public Collection<LogementEntity> search(SearchForm searchForm){
+        Collection<LogementEntity> loadedValue = logementRepository.
+                findLogementEntitiesByAddressContainingIgnoreCaseAndPriceIsGreaterThanEqualAndHouseYearIsGreaterThanEqualAndEnabledIsTrue(searchForm.getLocation(),searchForm.getMaxPrice(),searchForm.getAvailableDate());
+        if (loadedValue ==null){
+            System.out.println("no pe");
+            return new  ArrayList<LogementEntity>();}
+        System.out.println("not null");
+        loadedValue.forEach(logementEntity -> System.out.println(logementEntity.getReference()));
+        return loadedValue;
     }
 }

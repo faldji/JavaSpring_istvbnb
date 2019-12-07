@@ -1,4 +1,4 @@
-package form;
+package com.istv.progcomp.form;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;

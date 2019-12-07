@@ -1,4 +1,4 @@
-package form.exception;
+package com.istv.progcomp.form.exception;
 
 @SuppressWarnings("serial")
 public class UniqueUserException extends RuntimeException {

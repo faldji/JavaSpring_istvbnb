@@ -71,7 +71,7 @@ public class LogementEntity implements Serializable {
     public Collection<ReservationEntity> getValidReservations() {
         if (reservations.isEmpty())
             return reservations;
-        return reservations.stream().filter(ReservationEntity::isValidated).collect(Collectors.toCollection(ArrayList::new));
+        return reservations.stream().filter(j -> j.isActive() && j.isValidated()).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public boolean isEnabled() {

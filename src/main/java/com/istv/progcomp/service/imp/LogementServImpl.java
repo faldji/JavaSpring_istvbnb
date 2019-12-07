@@ -2,7 +2,7 @@ package com.istv.progcomp.service.imp;
 
 import com.istv.progcomp.model.LogementEntity;
 import com.istv.progcomp.model.UserEntity;
-import form.LogementForm;
+import com.istv.progcomp.form.LogementForm;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 

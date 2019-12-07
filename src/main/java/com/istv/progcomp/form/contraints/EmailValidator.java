@@ -1,4 +1,4 @@
-package form.contraints;
+package com.istv.progcomp.form.contraints;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

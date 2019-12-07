@@ -35,7 +35,7 @@
                 <div class="form-group">
                     <label for="role">Role</label>
                     <select class="selectpicker col-md-12" name="role" id="role" th:value="*{role}"  multiple>
-                        <option th:each="val : ${roles}" th:text="${val}" th:value="${val}"></option>
+                        <option th:each="val,idx : ${roles}" th:text="${val}" th:value="${idx.index}"></option>
                     </select>
                     <p class="alert-danger" th:if="${#fields.errors('role')}" th:errors="*{role}">Validation error</p>
 

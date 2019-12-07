@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" th:charset="${'UTF-8'}"
-      xmlns:th="https://www.thymeleaf.org" th:lang="${#locale}" lang="fr">
+      xmlns:th="https://www.thymeleaf.org" th:lang="${#locale}"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security" lang="fr">
 <head>
     <meta th:replace="base::base-layout">
     <title th:text="#{label.pages.home.title}"></title>
@@ -20,34 +21,41 @@
                 </div>
                 <div id="collapseFilter" class="collapse show" aria-labelledby="headingOne">
                     <div class="card-body">
-                        <form method="post" th:action="...">
+                        <form th:object="${searchForm}" th:action="@{/}" method="post">
                             <div class="form-row align-items-center">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="input-group">
                                         <label class="sr-only" for="inlineFormLocation" th:text="#{label.form.Location}">Location</label>
                                         <i class="input-icon fas fa-map-marker-alt"></i>
-                                        <input required type="search" class="padded-form-input form-control" id="inlineFormLocation" th:placeholder="#{label.form.location.Anywhere}">
+                                        <input type="search" th:field="*{location}" class="padded-form-input form-control"
+                                               id="inlineFormLocation" th:placeholder="#{label.form.location.Anywhere}">
+                                        <p class="alert-danger" th:each="error: ${#fields.errors('location')}" th:text="${error}">
+                                            Validation error
+                                        </p>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="input-group">
                                         <label class="sr-only" for="checkin" th:text="#{label.form.CheckIn}"></label>
                                         <i class="input-icon far fa-calendar-alt"></i>
-                                        <input required name="checkin" class="padded-form-input form-control" id="checkin" type="date">
+                                        <input required th:default="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" th:field="*{availableDate}" name="checkin"
+                                               class="padded-form-input form-control" id="checkin" type="date">
+                                        <p class="alert-danger" th:each="error: ${#fields.errors('availableDate')}"
+                                           th:text="${error}">
+                                            Validation error
+                                        </p>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="input-group">
-                                        <label class="sr-only" for="checkout" th:text="#{label.form.CheckOut}"></label>
-                                        <i class="input-icon far fa-calendar-alt"></i>
-                                        <input required name="checkout" class="padded-form-input form-control" id="checkout" type="date">
-                                    </div>
-                                </div>
-                                <div class="col-md-3 text-center custom-price-layout">
+                                <div class="col-md-4 text-center custom-price-layout">
                                     <label class="sr-only" for="price" th:text="#{label.form.Price}"></label>
                                     <output class="text-primary font-weight-bold"></output>
                                     <i  class="fas fa-euro-sign text-primary"></i>
-                                    <input min="0"  max="10000" class="form-control custom-range" name="price" id="price" type="range">
+                                    <input th:field="*{maxPrice}" min="1" th:default="1" max="1000"
+                                           class="form-control custom-range" name="price" id="price" type="range">
+                                    <p class="alert-danger" th:each="error: ${#fields.errors('maxPrice')}"
+                                       th:text="${error}">
+                                        Validation error
+                                    </p>
                                 </div>
                             </div>
                             <div class="form-row align-items-center text-center">
@@ -59,6 +67,7 @@
                     </div>
                 </div>
             </div>
+            <div class="h3" th:if="${isSearchResult}" th:text="#{label.form.SearchResult}"> </div>
         </div>
     </div>
     <div class="row" th:case="${false}" >
@@ -81,8 +90,10 @@
                         <div class="btn-group">
                                 <a th:href="@{/reservation(id=${logement.getId()}, add='')}" class="btn btn-outline-info" >
                                     <strong th:text="#{label.form.Reserve}"></strong>
-                                    <span class="badge badge-pill badge-info" th:text="${logement.getPrice()}+' &euro;'"></span>
+                                    <span class="badge badge-pill badge-info"
+                                          th:text="${isDollar && dollarId == logement.getId()}?${toDollar==null?'Error AWS '+logement.getPrice()+' &euro;':toDollar+' $'}:${logement.getPrice()}+' &euro;'"></span>
                                 </a>
+                            <a sec:authorize="isAuthenticated()" th:if="${!isDollar}" th:href="@{/(dollar=${logement.getPrice()},dollarId=${logement.getId()})}" class="btn btn-info" th:text="#{label.form.ConvertToDollar}"></a>
                             </div>
                         <small class="text-muted" th:text="${#dates.format( logement.getHouseYear(),'yyyy/MM/dd')}">
                             Last updated 3 mins ago
